@@ -14,17 +14,20 @@ $conn = new mysqli($servername, $user, $password, $database);
 if ($conn -> connect_error) {
     die("连接失败".$conn->connect_error);
 }
-echo "连接成功";
+echo "连接成功。";
 
+//“用户名”，查询用户是否存在
 $sql = "SELECT * FROM userInfo WHERE userName='$userName'";
 $result = $conn -> query($sql);
-
 if ($result -> num_rows > 0) {
-    while ($row = $result -> fetch_assoc()) {
-        echo $row['userName'];
+    $row = $result -> fetch_assoc();
+    if ($row['passwd'] == $passwd) {
+        echo "登录成功。";
+    } else {
+        echo "密码错误。";
     }
 } else {
-    echo "该用户不存在，请先注册";
+    echo "该用户不存在，请先注册。";
 }
 
 //关闭连接
