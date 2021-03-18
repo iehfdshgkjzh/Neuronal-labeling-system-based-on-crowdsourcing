@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"></html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css/register.css">
@@ -14,13 +14,226 @@
         <form method="POST" action="register.php" class="register_form">
             <a href="./login.html"><h1 id="light">登 录</h1></a>
             <h1 id="weight">注 册</h1>
-            <input type="text" name="name" placeholder="请输入真实姓名"/>
-            <input type="text" name="userName" placeholder="请输入用户名"/>
-            <input type="password" name="passwd" placeholder="请输入密码"/>
-            <input type="password" name="repasswd" placeholder="确认密码"/>
-            <input type="email" name="email" placeholder="请输入常用邮箱"/>
+            <input type="text" id="nm" name="name" placeholder="请输入真实姓名"/><br><span id="nmError"></span>
+            <input type="text" id="usname" name="userName" maxlength="16" placeholder="请输入用户名"/><br><span id="nameError"></span>
+            <input type="password" id="userpwd" name="passwd" maxlength="18" placeholder="请输入密码"/><span id="check"></span><br><span id="upwdError"></span>
+            <input type="password" id="confirmpwd" name="repasswd" maxlength="18" placeholder="确认密码"/><br><span id="pwdError"></span>
+            <input type="email" id="eml" name="email" placeholder="请输入常用邮箱"/><br><span id="emlError"></span>
             <div class="clearfix"></div>
-            <button type="submit">注 册</button>
+            <button type="submit" id="btn">注 册</button>
         </form>
+		
+		<script type="text/javascript">
+			window.onload = function(){
+			//真实姓名
+				var nm = document.getElementById("nm");
+				var nmErrorSpan = document.getElementById("nmError");
+				nm.onblur = function(){
+					var name = nm.value;
+					//姓名不能为空
+					if(name == ""){
+						nmErrorSpan.innerHTML = "<font color='red' size='2'>真实姓名不能为空</font>"
+					}else{
+						//判断姓名格式
+						var nmExp = /(^[\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.·。]{0,10}[\u4e00-\u9fa5]{1}$)|(^[a-zA-Z]{1}[a-zA-Z\s]{0,20}[a-zA-Z]{1}$)/;
+						var ok1 = nmExp.test(name)
+						if(ok1){
+							nmErrorSpan.innerHTML = "";
+						}else{
+							nmErrorSpan.innerHTML = "<font color='red' size='2'>姓名格式不正确</font>"
+						}
+					}
+				}
+				
+				// 获得焦点:清空span的错误信息.
+				nm.onfocus = function(){
+					nmErrorSpan.innerHTML = "";
+				}
+		//用户名
+			var usnm = document.getElementById("usname");
+			var nameErrorSpan = document.getElementById("nameError")
+			
+			usnm.onmouseover = function(){
+				nameErrorSpan.innerHTML = "<font color='grey' size='2'>数字+字母（区分大小写），长度8-16位</font>"
+			}
+			usnm.onmouseleave = function(){
+				nameErrorSpan.innerHTML = ""
+			}
+			
+			usnm.onblur = function(){
+				var unm = usnm.value;
+				if(unm == ""){
+					nameErrorSpan.innerHTML = "<font color='red' size='2'>用户名不能为空</font>"
+				}else{
+					var unmExp =  /[0-9A-Za-z]{8,16}/
+					var ok2 = unmExp.test(unm);
+					if(ok2){
+						nameErrorSpan.innerHTML = ""
+					}else{
+						nameErrorSpan.innerHTML = "<font color='red' size='2'>用户名格式不正确</font>"
+					}	
+				}
+			}
+			usnm.onfocus = function(){
+				nameErrorSpan.innerHTML = "";
+			}
+			
+		
+			
+			
+			
+		//密码
+			var uspwd = document.getElementById("userpwd");
+			var upwdErrorSpan = document.getElementById("upwdError")
+			uspwd.onmouseover = function(){
+				upwdErrorSpan.innerHTML = "<font color='grey' size='2'>数字、字母（区分大小写），长度6-18位</font>";
+			}
+			uspwd.onmouseleave = function(){
+				upwdErrorSpan.innerHTML = "";
+			}
+			
+			uspwd.onblur = function(){
+				userpwd = uspwd.value;
+				if(userpwd == ""){
+					upwdErrorSpan.innerHTML = "<font color='red' size='2'>密码不能为空</font>";
+				}else{
+					var upwdExp = /[0-9A-Za-z]{6,18}/
+					var ok = upwdExp.test(userpwd);
+					if(ok){
+						upwdErrorSpan.innerHTML = ""
+					}else{
+						upwdErrorSpan.innerHTML = "<font color='red' size='2'>密码格式不正确</font>"
+					}
+					
+				}
+					
+				}
+			uspwd.onkeyup = function(){
+				var pwdExp = /^[A-Za-z0-9]+$/
+				userpwd = uspwd.value;
+				var ok3 = pwdExp.test(userpwd);
+				console.log(ok3);
+				var checkSpan = document.getElementById("check");
+				if(ok3){
+					upwdErrorSpan.innerHTML = "";
+					var index = checkPassWord(this.value);
+					if(index == 1){
+						checkSpan.innerHTML = "<font color='grey' size='2'>弱</font>";
+					}else if(index == 2){
+						checkSpan.innerHTML = "<font color='grey' size='2'>中</font>";
+					}else if(index == 3){
+						checkSpan.innerHTML = "<font color='grey' size='2'>强</font>";
+					}
+				}else{
+					checkSpan.innerHTML = "";
+					upwdErrorSpan.innerHTML = "<font color='red' size='2'>密码不符合规定</font>";
+				}
+				
+				
+					
+				}
+			
+			function checkPassWord(value){
+				var modes = 0;
+				if(value.length < 6){//最初级别
+					return modes;
+				}
+				if(/\d/.test(value)){//如果用户输入的密码 包含了数字
+					modes++;
+				}
+				if(/[a-z]/.test(value)){//如果用户输入的密码 包含了小写的a到z
+					modes++;
+				}
+				if(/[A-Z]/.test(value)){//如果用户输入的密码 包含了大写的A到Z
+					modes++;
+				}
+				switch(modes){
+					case 1 :
+						return 1;
+						break;
+					case 2 :
+						return 2;
+						break;
+					case 3 :
+						return 3;
+						break;
+				}
+			}
+				
+			uspwd.onfocus = function(){
+				upwdErrorSpan.innerHTML = "";
+			}
+			
+			
+			
+		   
+		//确认密码
+			
+			var confirmpwd = document.getElementById("confirmpwd");
+			var pwdErrorSpan = document.getElementById("pwdError");
+			document.getElementById("confirmpwd").onblur = function(){
+				var pwd = document.getElementById("userpwd").value;
+				var conpwd = confirmpwd.value;
+				if(confirmpwd == ""||(pwd != conpwd)){
+					pwdErrorSpan.innerHTML = "<font color='red' size='2'>确认密码和密码不一致</font>";
+				}else{
+					pwdErrorSpan.innerHTML = "";
+				}
+			}
+			document.getElementById("confirmpwd").onfocus = function(){
+				pwdErrorSpan.innerHTML = "";
+			}
+			
+		//邮箱
+			var eml = document.getElementById("eml");
+			var emlErrorSpan = document.getElementById("emlError");
+			eml.onblur = function(){
+				var e = eml.value;
+				if(e == ""){
+					emlErrorSpan.innerHTML = "<font color='red' size='2'>邮箱不能为空</font>"
+				}else{
+					var emlExp = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+					var ok4 = emlExp.test(e);
+					if(ok4){
+						emlErrorSpan.innerHTML = ""
+					}else{
+						emlErrorSpan.innerHTML = "<font color='red' size='2'>邮箱格式不正确</font>"
+					}
+				}
+				
+			}
+			eml.onfocus = function(){
+				emlErrorSpan.innerHTML = "";
+			}
+			
+			
+			document.getElementById("btn").onclick = function(){
+				nm.focus(); //触发文本框的获取焦点事件
+				nm.blur();//触发文本框的失去焦点事件
+				
+				usnm.focus();
+				usnm.blur();
+				
+				uspwd.focus();
+				uspwd.blur();
+				
+				confirmpwd.focus();
+				confirmpwd.blur();
+				
+				eml.focus();
+				eml.blur();
+				
+				// 当所有的span都是空的表示表单合法
+				if(nmErrorSpan.innerHTML == "" && nameErrorSpan.innerHTML == "" && upwdErrorSpan.innerHTML == ""
+				&& pwdErrorSpan.innerHTML == "" && emlErrorSpan.innerHTML ==""){
+					btn.submit();
+				}
+			}
+	}
+	
+			
+		</script>
     </div>
 </body>
+
+</html>

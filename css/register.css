@@ -38,7 +38,7 @@ body{
     width: 66%;
     height: 24px;
     font-size: 14px;
-    margin-top: 15px;
+    margin-top: 22px;
     border: none;
 }
 .register_form input:{
@@ -63,4 +63,28 @@ body{
 }
 .register_form button:active{
     border-style: none;
+}
+
+#nmError{
+	position: fixed;
+	padding-left: 50px;
+}
+
+#nameError{
+	position: fixed;
+	padding-left: 50px;
+}
+
+#upwdError{
+	position:fixed;
+	padding-left: 50px;
+}
+#pwdError{
+	position:fixed;
+	padding-left: 50px;
+}
+
+#emlError{
+	position:fixed;
+	padding-left: 50px;
 }
