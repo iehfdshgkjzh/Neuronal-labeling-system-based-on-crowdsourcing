@@ -106,6 +106,7 @@ export default {
     },
     methods: {
       upload(info) {
+        this.reset();
         const self = this
         const filterImg = this.$refs.img
         const input = document.createElement('input')

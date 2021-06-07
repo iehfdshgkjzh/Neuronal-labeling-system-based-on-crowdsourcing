@@ -3,21 +3,28 @@
         <form method="POST" action="register.php" class="register_form">
             <h1 id="light" @click="gotoLogin">登 录</h1>
             <h1 id="weight">注 册</h1>
+
             <input type="text" id="nm" name="name" placeholder="请输入真实姓名"
                 v-model="name" @blur='nameCheck' @focus="spanClear(1)"/>
             <br><span id="nmError">{{ tip1 }}</span>
+
             <input type="text" id="usname" name="userName" maxlength="16" placeholder="请输入用户名"
                 v-model="username" @mouseover="inputTip(2)" @mouseleave='spanClear(2)' @blur="usernameCheck" @focus="spanClear(2)"/>
-            <br><span id="nameError">{{ tip2 }}</span>
+            <br><span id="nameError" :class="{activeColor:colorIndex2==1}">{{ tip2 }}</span>
+
             <input type="password" id="userpwd" name="passwd" maxlength="18" placeholder="请输入密码"
                 v-model="password" @mouseover="inputTip(3)" @mouseleave='spanClear(3)' @blur="passwordCheck" @keyup="strengthCheck" @focus="spanClear(3)"/>
-            <span id="check">{{ passwordStrength }}</span><br><span id="upwdError">{{ tip3 }}</span>
+            <span id="check">{{ passwordStrength }}</span>
+            <br><span id="upwdError" :class="{activeColor:colorIndex3==1}">{{ tip3 }}</span>
+
             <input type="password" id="confirmpwd" name="repasswd" maxlength="18" placeholder="确认密码"
                 v-model="confirmPassword" @blur="passwordConfirm" @focus="spanClear(4)"/>
             <br><span id="pwdError">{{ tip4 }}</span>
+
             <input type="email" id="eml" name="email" placeholder="请输入常用邮箱"
                 v-model="email" @blur="emailCheck" @focus="spanClear(5)"/>
             <div id="emlError">{{ tip5 }}</div>
+
             <div class="clearfix"></div>
             <button id="btn" @click="submit">注 册</button>
         </form>
@@ -34,8 +41,10 @@ export default {
             username: '',
             tip2: '',
             password: '',
+            colorIndex2: 0,
             passwordStrength: '',
             tip3: '',
+            colorIndex3: 0,
             confirmPassword: '',
             tip4: '',
             email: '',
@@ -60,28 +69,32 @@ export default {
             }
         },
         usernameCheck(){
-            var unmExp =  /[0-9A-Za-z]{8,16}/
+            var unmExp =  /^[0-9A-Za-z]{8,16}$/
 			var ok2 = unmExp.test(this.username);
             if(this.username == ''){
-                this.tip2 = '用户名不能为空'
+                this.colorIndex2 = 1;
+                this.tip2 = '用户名不能为空';
             }else{
                 if(ok2){
                     this.tip2 = '';
                 }else{
+                    this.colorIndex2 = 1;
                     this.tip2 = '用户名格式不正确';
                 }
             }
 
         },
         passwordCheck(){
-            var upwdExp = /[0-9A-Za-z]{6,18}/
+            var upwdExp = /^[0-9A-Za-z]{6,18}$/
 			var ok3 = upwdExp.test(this.password);
             if(this.password == ''){
+                this.colorIndex3 = 1;
                 this.tip3 = '密码不能为空';
             }else{
                 if(ok3){
                     this.tip3 = '';
                 }else{
+                    this.colorIndex3 = 1;
                     this.tip3 = '密码格式不正确';
                 }
             }
@@ -151,9 +164,11 @@ export default {
         inputTip(index) {
             switch(index){
                 case 2:
-                    this.tip2 = '数字+字母（区分大小写），长度8-16位';
+                    this.colorIndex2 = 0;
+                    this.tip2 = '数字、字母（区分大小写），长度8-16位';
                     break;
                 case 3:
+                    this.colorIndex3 = 0;
                     this.tip3 = '数字、字母（区分大小写），长度6-18位';
             }
         },
@@ -163,10 +178,18 @@ export default {
                     this.tip1 = '';
                     break;
                 case 2:
+                    this.colorIndex2 = 0;
                     this.tip2 = '';
+                    if(this.username){
+                        this.usernameCheck();
+                    }
                     break;
                 case 3:
+                    this.colorIndex3 = 0;
                     this.tip3 = '';
+                    if(this.password){
+                        this.passwordCheck();
+                    }
                     break;
                 case 4:
                     this.tip4 = '';
@@ -177,6 +200,11 @@ export default {
             }
         },
         submit() {
+            this.nameCheck();
+            this.usernameCheck();
+            this.passwordCheck();
+            this.passwordConfirm();
+            this.emailCheck();
             if(this.tip1==''&&this.tip2==''&&this.tip3==''&&this.tip4==''&&this.tip5==''){
                 //document.getElementById('btn').submit();
             }
@@ -257,8 +285,15 @@ body{
 	position: fixed;
     font-size: 14px;
 }
+#pwdError{
+    color: red;
+}
+#nmError{
+    color: red;
+}
 #emlError {
     margin-left: 54px;
+    color: red;
 }
 #check {
     position: fixed;
@@ -267,5 +302,8 @@ body{
 }
 input {
     outline: none;
+}
+.activeColor {
+    color: red;
 }
 </style>
