@@ -114,7 +114,7 @@ export default {
             var pwdExp = /^[A-Za-z0-9]+$/;
 			var ok3 = pwdExp.test(this.password);
 			if(ok3){
-				this.tip3 = '';
+				// this.tip3 = '';
 				var index = this.strengthDefine(this.password);
 				if(index == 1){
 					this.passwordStrength = '弱';
